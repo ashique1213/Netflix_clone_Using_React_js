@@ -1,6 +1,5 @@
 import React, { useEffect ,useRef, useState } from 'react'
 import './TitleCards.css'
-import cards_data from '../../assets/cards/Cards_data'
 import { Link } from 'react-router-dom'
 
 const TitleCards = ({title,category}) => {  
@@ -12,7 +11,7 @@ const TitleCards = ({title,category}) => {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ODg2MjFlMmE2MmU1NTk2ODNmNDY4YjliNDJkNWMxYyIsIm5iZiI6MTczNzAyNjUyMC45NDMsInN1YiI6IjY3ODhlYmQ4OTQ3YjE5Zjc4Yjk3ODIzZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.qFUu1gi3dzcwojjsDdt6dj2-SL_4d4ms28sZQN5P9e0'
+      Authorization: `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`
     }
   };
   
@@ -21,24 +20,46 @@ const TitleCards = ({title,category}) => {
     cardsRef.current.scrollLeft += event.deltaY;
   }
 
+  const scrollLeft = () => {
+    cardsRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+  }
+
+  const scrollRight = () => {
+    cardsRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+  }
+
   useEffect(() => {
     fetch(`https://api.themoviedb.org/3/movie/${category?category:"now_playing"}?language=en-US&page=1`, options)
     .then(res => res.json())
     .then(res => setApiData(res.results))
     .catch(err => console.error(err));
-    cardsRef.current.addEventListener('wheel', handleWheel);
-  }, [])
+    
+    const currentRef = cardsRef.current;
+    if (currentRef) {
+      currentRef.addEventListener('wheel', handleWheel);
+    }
+    
+    return () => {
+      if (currentRef) {
+        currentRef.removeEventListener('wheel', handleWheel);
+      }
+    };
+  }, [category])
   
   return (
     <div className='title-cards'>
       <h2>{title?title:"Popular on Netflix"}</h2>
-      <div className='card-list' ref={cardsRef}>
-        {apiData.map((card, index) => {
-          return <Link to={`/player/${card.id}`} className='card' key={index}>
-            <img src={`https://image.tmdb.org/t/p/w500`+card.backdrop_path} alt="" />
-            <p>{card.original_title}</p>
-          </Link>
-        })}
+      <div className="card-container">
+        <button className="scroll-btn left" onClick={scrollLeft}>{'<'}</button>
+        <div className='card-list' ref={cardsRef}>
+          {apiData.map((card) => {
+            return <Link to={`/player/${card.id}`} className='card' key={card.id}>
+              <img src={`https://image.tmdb.org/t/p/w500`+card.backdrop_path} alt={card.original_title} />
+              <p>{card.original_title}</p>
+            </Link>
+          })}
+        </div>
+        <button className="scroll-btn right" onClick={scrollRight}>{'>'}</button>
       </div>
     </div>
   )
