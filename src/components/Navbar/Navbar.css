@@ -8,6 +8,7 @@
     color: #e5e5e5;
     background-image: linear-gradient(180deg,rgba(0,0,0,0.7)10%,transparent);
     z-index: 1;
+    transition: background 0.5s ease;
 }
 .navbar-left{
     display: flex;
@@ -25,6 +26,10 @@
 }
 .navbar-left ul li{
     cursor: pointer;
+    transition: color 0.3s;
+}
+.navbar-left ul li:hover {
+    color: #fff;
 }
 
 .navbar-right{
@@ -59,16 +64,34 @@
     border-radius: 2px;
     text-decoration: underline;
     z-index: 1;
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
 }
+.navbar .dropdown button,
 .navbar .dropdown p{
     font-size: 13px;
     cursor: pointer;
+    background: none;
+    border: none;
+    color: white;
 }
 .navbar-profile:hover .dropdown{
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
 .nav-dark{
     background: #000
+}
+
+@media (max-width: 768px) {
+    .navbar-left ul, .navbar-right p {
+        display: none;
+    }
+    .navbar-left {
+        gap: 20px;
+    }
 }

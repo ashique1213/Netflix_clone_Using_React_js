@@ -18,8 +18,40 @@
     border-radius: 4px;
     cursor: pointer;
 }
+.card-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 24px;
+    padding: 10px 15px;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 5px;
+}
+.card-container:hover .scroll-btn {
+    opacity: 1;
+}
+.scroll-btn.left { left: 0; }
+.scroll-btn.right { right: 0; }
+.scroll-btn:hover { background: rgba(0, 0, 0, 0.8); }
+
 .card-list .card{
-    position: relative;    
+    position: relative;
+    transition: transform 0.3s ease;
+}
+.card-list .card:hover {
+    transform: scale(1.05);
+    z-index: 1;
 }
 .card-list .card p{
     position: absolute;
@@ -27,4 +59,10 @@
     right: 10px;
     text-decoration: none;
     color: #fff;
+}
+
+@media (max-width: 768px) {
+    .card-list img {
+        width: 150px;
+    }
 }
